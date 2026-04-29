@@ -39,7 +39,7 @@ def init_db():
             )
             
             # Fiori (Figli)
-            fiori_list = ['Iris', 'Calle']
+            fiori_list = ['Iris', 'Calle', 'Dicentra']
             for fiore in fiori_list:
                 nuovo_fiore = Plant(
                     name=fiore,
