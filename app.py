@@ -30,12 +30,6 @@ def init_db():
                 watering_frequency=1,
                 image_url='bonsai_fico.png'
             )
-            plant2 = Plant(
-                name='Piante Aromatiche', 
-                species='Mix Erbe', 
-                watering_frequency=1,
-                image_url='aromatiche.png'
-            )
             plant3 = Plant(
                 name='Fiori', 
                 species='Mix Fiori', 
@@ -43,8 +37,19 @@ def init_db():
                 image_url='fiori.png'
             )
             db.session.add(plant1)
-            db.session.add(plant2)
             db.session.add(plant3)
+            
+            # Erbe Aromatiche
+            erbe = ['Menta', 'Prezzemolo', 'Timo', 'Rosmarino', 'Salvia', 'Alloro', 'Erba cipollina', 'Origano', 'Maggiorana']
+            for erba in erbe:
+                nuova_erba = Plant(
+                    name=erba,
+                    species='Erba Aromatica',
+                    watering_frequency=1,
+                    image_url='aromatiche.png'
+                )
+                db.session.add(nuova_erba)
+                
             db.session.commit()
 
 @app.route('/')
