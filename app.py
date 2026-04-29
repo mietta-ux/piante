@@ -11,13 +11,13 @@ app.config['SECRET_KEY'] = 'green-thumb-secret'
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max upload
 
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'heic', 'webp', 'bmp', 'HEIC', 'JPG', 'PNG'}
 
 db.init_app(app)
 
 def allowed_file(filename):
     return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+           filename.rsplit('.', 1)[1].lower() in [ext.lower() for ext in ALLOWED_EXTENSIONS]
 
 def init_db():
     with app.app_context():
@@ -89,15 +89,19 @@ def add_note(id):
     file = request.files.get('photo')
     
     filename = None
-    if file and allowed_file(file.filename):
-        filename = secure_filename(f"{datetime.now().strftime('%Y%m%d%H%M%S')}_{file.filename}")
-        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+    if file and file.filename != '':
+        if allowed_file(file.filename):
+            filename = secure_filename(f"{datetime.now().strftime('%Y%m%d%H%M%S')}_{file.filename}")
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        else:
+            flash('Attenzione: formato immagine non supportato. La nota è stata salvata senza foto.', 'warning')
 
     new_note = DiaryNote(content=content, image_path=filename, plant_id=plant.id)
     db.session.add(new_note)
     db.session.commit()
     
-    flash('Nota aggiunta al diario!', 'success')
+    if not file or (file and allowed_file(file.filename)):
+        flash('Nota aggiunta al diario con successo!', 'success')
     return redirect(url_for('plant_detail', id=id))
 
 if __name__ == '__main__':
