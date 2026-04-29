@@ -26,7 +26,14 @@
                     </div>
                 </div>
                 <div class="p-4">
-                    <h2 class="text-lg font-bold mb-1">{{ child.name }}</h2>
+                    <div class="flex justify-between items-start mb-1">
+                        <h2 class="text-lg font-bold">{{ child.name }}</h2>
+                        {% if child.is_pet_friendly %}
+                            <span title="Sicura" class="text-green-600 text-[10px] bg-green-50 px-1.5 py-0.5 rounded-full font-bold border border-green-200">🐾 OK</span>
+                        {% else %}
+                            <span title="Tossica" class="text-red-500 text-[10px] bg-red-50 px-1.5 py-0.5 rounded-full font-bold border border-red-100">🐾 NO</span>
+                        {% endif %}
+                    </div>
                     <div class="flex items-center justify-between mt-2">
                         <span class="text-xs text-gray-400 uppercase tracking-wider">Ultima:</span>
                         <span class="text-sm font-medium">{{ child.last_watered.strftime('%d/%m/%y') }}</span>
@@ -99,7 +106,24 @@
             <form action="{{ url_for('add_note', id=plant.id) }}" method="POST" enctype="multipart/form-data" class="space-y-4">
                 <textarea name="content" rows="3" class="w-full p-4 rounded-xl border border-gray-100 focus:ring-2 focus:ring-sage focus:outline-none bg-gray-50" placeholder="Com'è andata oggi? (es. Messo concime, nuove foglie...)" required></textarea>
                 
-                <div class="flex items-center gap-4">
+                <div class="grid grid-cols-2 gap-4 p-4 bg-sage/5 rounded-xl border border-sage/20">
+                    <div>
+                        <label class="block text-sm font-semibold text-sage mb-2 flex justify-between">
+                            <span>Stress PRIMA (1-5)</span>
+                            <span id="val_before">3</span>
+                        </label>
+                        <input type="range" name="stress_before" min="1" max="5" value="3" class="w-full accent-sage" oninput="document.getElementById('val_before').innerText = this.value">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-sage mb-2 flex justify-between">
+                            <span>Stress DOPO (1-5)</span>
+                            <span id="val_after">1</span>
+                        </label>
+                        <input type="range" name="stress_after" min="1" max="5" value="1" class="w-full accent-sage" oninput="document.getElementById('val_after').innerText = this.value">
+                    </div>
+                </div>
+                
+                <div class="flex items-center gap-4 mt-2">
                     <div class="flex-1">
                         <label class="block text-sm font-medium text-gray-500 mb-1">Carica una foto (opzionale)</label>
                         <input type="file" name="photo" accept="image/*" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-sage file:text-white hover:file:bg-sage/90">
@@ -134,6 +158,16 @@
                     <div class="flex justify-between items-start mb-3 pr-8">
                         <span class="text-xs font-bold text-sage uppercase tracking-widest">{{ note.date_added.strftime('%d %B %Y') }}</span>
                     </div>
+                    
+                    {% if note.stress_before and note.stress_after %}
+                    <div class="mb-4 inline-block bg-blue-50 px-3 py-1.5 rounded-lg border border-blue-100">
+                        <span class="text-xs font-medium text-blue-800">
+                            Livello Stress: {{ note.stress_before }}/5 ➔ {{ note.stress_after }}/5 
+                            {% if note.stress_after < note.stress_before %}😌{% else %}🤔{% endif %}
+                        </span>
+                    </div>
+                    {% endif %}
+
                     <div class="flex flex-col md:flex-row gap-6">
                         <p class="text-gray-700 leading-relaxed flex-1">{{ note.content }}</p>
                         

@@ -13,6 +13,7 @@ class Plant(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
     tips = db.Column(db.Text, nullable=True)
+    is_pet_friendly = db.Column(db.Boolean, default=True)
     
     parent_id = db.Column(db.Integer, db.ForeignKey('plant.id'), nullable=True)
     children = db.relationship('Plant', backref=db.backref('parent', remote_side=[id]))
@@ -26,6 +27,8 @@ class DiaryNote(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.Text, nullable=False)
     image_path = db.Column(db.String(200))
+    stress_before = db.Column(db.Integer, nullable=True)
+    stress_after = db.Column(db.Integer, nullable=True)
     date_added = db.Column(db.DateTime, default=datetime.utcnow)
     plant_id = db.Column(db.Integer, db.ForeignKey('plant.id'), nullable=False)
 

@@ -1,4 +1,5 @@
 import os
+import requests
 from flask import Flask, render_template, request, redirect, url_for, flash
 from models import db, Plant, DiaryNote
 from datetime import datetime
@@ -73,10 +74,25 @@ def init_db():
                 
             db.session.commit()
 
+def get_weather_alert():
+    try:
+        url = "https://api.open-meteo.com/v1/forecast?latitude=45.918&longitude=10.884&current_weather=true"
+        r = requests.get(url, timeout=2)
+        if r.status_code == 200:
+            data = r.json()
+            temp = data['current_weather']['temperature']
+            wcode = data['current_weather']['weathercode']
+            if temp < 5.0 or wcode >= 61:
+                return f"Attenzione: clima critico per le piante all'aperto! Temperatura: {temp}°C."
+    except:
+        pass
+    return None
+
 @app.route('/')
 def index():
     plants = Plant.query.filter_by(parent_id=None).all()
-    return render_template('index.html', plants=plants)
+    weather_alert = get_weather_alert()
+    return render_template('index.html', plants=plants, weather_alert=weather_alert)
 
 @app.route('/plant/<int:id>')
 def plant_detail(id):
@@ -97,6 +113,8 @@ def water_plant(id):
 def add_note(id):
     plant = Plant.query.get_or_404(id)
     content = request.form.get('content')
+    stress_before = request.form.get('stress_before', type=int)
+    stress_after = request.form.get('stress_after', type=int)
     file = request.files.get('photo')
     
     filename = None
@@ -107,7 +125,13 @@ def add_note(id):
         else:
             flash('Attenzione: formato immagine non supportato. La nota è stata salvata senza foto.', 'warning')
 
-    new_note = DiaryNote(content=content, image_path=filename, plant_id=plant.id)
+    new_note = DiaryNote(
+        content=content, 
+        image_path=filename, 
+        plant_id=plant.id,
+        stress_before=stress_before,
+        stress_after=stress_after
+    )
     db.session.add(new_note)
     db.session.commit()
     
