@@ -75,13 +75,16 @@ def init_db():
                 'Maggiorana': 'Delicata, perfetta per minestre, frittate, ripieni di carne e verdure delicate.'
             }
             for erba, tip in erbe_tips.items():
+                img_name = erba.lower().replace(' ', '_') + '.png'
+                is_pet_friendly = erba not in ['Alloro', 'Erba cipollina']
                 nuova_erba = Plant(
                     name=erba,
-                    species='Erba Aromatica',
-                    watering_frequency=1,
-                    image_url='aromatiche.png',
+                    species='Erba aromatica',
+                    watering_frequency=2,
+                    image_url=img_name,
                     parent=plant_aromatiche,
-                    tips=tip
+                    tips=tip,
+                    is_pet_friendly=is_pet_friendly
                 )
                 db.session.add(nuova_erba)
                 
