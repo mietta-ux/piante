@@ -36,17 +36,27 @@ def init_db():
                 watering_frequency=1,
                 image_url='fiori.png'
             )
+            
+            # Categoria Erbe Aromatiche
+            plant_aromatiche = Plant(
+                name='Piante Aromatiche',
+                species='Gruppo Erbe',
+                watering_frequency=1,
+                image_url='aromatiche.png'
+            )
             db.session.add(plant1)
             db.session.add(plant3)
+            db.session.add(plant_aromatiche)
             
-            # Erbe Aromatiche
+            # Erbe Aromatiche (Figlie)
             erbe = ['Menta', 'Prezzemolo', 'Timo', 'Rosmarino', 'Salvia', 'Alloro', 'Erba cipollina', 'Origano', 'Maggiorana']
             for erba in erbe:
                 nuova_erba = Plant(
                     name=erba,
                     species='Erba Aromatica',
                     watering_frequency=1,
-                    image_url='aromatiche.png'
+                    image_url='aromatiche.png',
+                    parent=plant_aromatiche
                 )
                 db.session.add(nuova_erba)
                 
@@ -54,7 +64,7 @@ def init_db():
 
 @app.route('/')
 def index():
-    plants = Plant.query.all()
+    plants = Plant.query.filter_by(parent_id=None).all()
     return render_template('index.html', plants=plants)
 
 @app.route('/plant/<int:id>')
