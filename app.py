@@ -74,7 +74,7 @@ def init_db():
                 
             db.session.commit()
 
-def get_weather_alert():
+def get_weather():
     try:
         url = "https://api.open-meteo.com/v1/forecast?latitude=45.918&longitude=10.884&current_weather=true"
         r = requests.get(url, timeout=2)
@@ -82,8 +82,26 @@ def get_weather_alert():
             data = r.json()
             temp = data['current_weather']['temperature']
             wcode = data['current_weather']['weathercode']
-            if temp < 5.0 or wcode >= 61:
-                return f"Attenzione: clima critico per le piante all'aperto! Temperatura: {temp}°C."
+            
+            is_alert = temp < 5.0 or wcode >= 61
+            
+            if wcode == 0: condition = "Sereno"
+            elif wcode in [1, 2, 3]: condition = "Nuvoloso"
+            elif wcode in [45, 48]: condition = "Nebbia"
+            elif wcode in [51, 53, 55]: condition = "Pioggerellina"
+            elif wcode in [61, 63, 65]: condition = "Pioggia"
+            elif wcode in [71, 73, 75]: condition = "Neve"
+            elif wcode >= 95: condition = "Temporale"
+            else: condition = "Variabile"
+
+            message = f"Attenzione: clima critico per le piante all'aperto!" if is_alert else "Condizioni ottimali per le tue piante."
+            
+            return {
+                'temp': temp,
+                'condition': condition,
+                'is_alert': is_alert,
+                'message': message
+            }
     except:
         pass
     return None
@@ -91,8 +109,8 @@ def get_weather_alert():
 @app.route('/')
 def index():
     plants = Plant.query.filter_by(parent_id=None).all()
-    weather_alert = get_weather_alert()
-    return render_template('index.html', plants=plants, weather_alert=weather_alert)
+    weather = get_weather()
+    return render_template('index.html', plants=plants, weather=weather)
 
 @app.route('/plant/<int:id>')
 def plant_detail(id):

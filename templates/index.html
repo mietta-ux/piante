@@ -6,14 +6,24 @@
     <p class="text-gray-500">Prenditi cura delle tue compagne verdi.</p>
 </header>
 
-{% if weather_alert %}
-<div class="mb-8 p-4 bg-blue-50 border-l-4 border-blue-500 text-blue-800 rounded-r-xl shadow-sm flex items-center gap-4">
-    <div class="text-3xl">⛈️</div>
-    <div>
-        <h4 class="font-bold">Smart Weather Alert (Arco, TN)</h4>
-        <p class="text-sm">{{ weather_alert }}</p>
+{% if weather %}
+    {% if weather.is_alert %}
+    <div class="mb-8 p-4 bg-blue-50 border-l-4 border-blue-500 text-blue-800 rounded-r-xl shadow-sm flex items-center gap-4">
+        <div class="text-3xl">⛈️</div>
+        <div>
+            <h4 class="font-bold">Smart Weather Alert (Arco, TN)</h4>
+            <p class="text-sm">{{ weather.message }} ({{ weather.temp }}°C, {{ weather.condition }})</p>
+        </div>
     </div>
-</div>
+    {% else %}
+    <div class="mb-8 p-4 bg-green-50 border-l-4 border-sage text-green-800 rounded-r-xl shadow-sm flex items-center gap-4">
+        <div class="text-3xl">☀️</div>
+        <div>
+            <h4 class="font-bold">Meteo Arco, TN</h4>
+            <p class="text-sm">{{ weather.message }} ({{ weather.temp }}°C, {{ weather.condition }})</p>
+        </div>
+    </div>
+    {% endif %}
 {% endif %}
 
 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
