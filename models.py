@@ -8,7 +8,7 @@ class Plant(db.Model):
     name = db.Column(db.String(100), nullable=False)
     species = db.Column(db.String(100))
     image_url = db.Column(db.String(200), default='default_plant.jpg')
-    watering_frequency = db.Column(db.Integer, default=7)  # in days
+    watering_frequency = db.Column(db.Integer, default=1)  # in days
     last_watered = db.Column(db.DateTime, default=datetime.utcnow)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     

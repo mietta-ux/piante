@@ -27,19 +27,19 @@ def init_db():
             plant1 = Plant(
                 name='Bonsai di Fico', 
                 species='Ficus Carica', 
-                watering_frequency=3,
+                watering_frequency=1,
                 image_url='bonsai_fico.png'
             )
             plant2 = Plant(
                 name='Piante Aromatiche', 
                 species='Mix Erbe', 
-                watering_frequency=2,
+                watering_frequency=1,
                 image_url='aromatiche.png'
             )
             plant3 = Plant(
                 name='Fiori', 
                 species='Mix Fiori', 
-                watering_frequency=4,
+                watering_frequency=1,
                 image_url='fiori.png'
             )
             db.session.add(plant1)
