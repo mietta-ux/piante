@@ -100,6 +100,36 @@
 
     <!-- Diary and Timeline -->
     <div class="md:col-span-2">
+        {% if 'Bonsai' in plant.name %}
+        <!-- Interventi Rapidi Bonsai -->
+        <div class="mb-8 p-6 bg-stone-50 rounded-2xl border border-stone-200">
+            <h3 class="font-bold text-stone-800 mb-3 flex items-center gap-2">
+                <span class="text-xl">✂️</span> Interventi a lungo termine
+            </h3>
+            <div class="flex flex-wrap gap-3">
+                <form action="{{ url_for('quick_action', id=plant.id) }}" method="POST" class="inline">
+                    <input type="hidden" name="action" value="Concimato">
+                    <button type="submit" class="bg-white border-2 border-stone-200 text-stone-700 px-4 py-2 rounded-xl text-sm font-bold hover:bg-stone-100 hover:border-stone-300 transition-all shadow-sm flex items-center gap-2">
+                        🧪 Concimato
+                    </button>
+                </form>
+                <form action="{{ url_for('quick_action', id=plant.id) }}" method="POST" class="inline">
+                    <input type="hidden" name="action" value="Potatura radici">
+                    <button type="submit" class="bg-white border-2 border-stone-200 text-stone-700 px-4 py-2 rounded-xl text-sm font-bold hover:bg-stone-100 hover:border-stone-300 transition-all shadow-sm flex items-center gap-2">
+                        🪴 Potatura radici
+                    </button>
+                </form>
+                <form action="{{ url_for('quick_action', id=plant.id) }}" method="POST" class="inline">
+                    <input type="hidden" name="action" value="Pulizia foglie">
+                    <button type="submit" class="bg-white border-2 border-stone-200 text-stone-700 px-4 py-2 rounded-xl text-sm font-bold hover:bg-stone-100 hover:border-stone-300 transition-all shadow-sm flex items-center gap-2">
+                        🧽 Pulizia foglie
+                    </button>
+                </form>
+            </div>
+            <p class="text-xs text-stone-500 mt-3 italic">Clicca su un pulsante per registrare rapidamente l'intervento nel diario.</p>
+        </div>
+        {% endif %}
+
         <!-- Add Entry -->
         <div class="card p-6 mb-8">
             <h3 class="text-xl font-bold mb-4">Aggiungi al Diario</h3>

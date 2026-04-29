@@ -143,6 +143,17 @@ def add_note(id):
         flash('Nota aggiunta al diario con successo!', 'success')
     return redirect(url_for('plant_detail', id=id))
 
+@app.route('/plant/<int:id>/quick_action', methods=['POST'])
+def quick_action(id):
+    plant = Plant.query.get_or_404(id)
+    action = request.form.get('action')
+    if action:
+        note = DiaryNote(content=f"🛠 Intervento a lungo termine: {action}", plant_id=plant.id)
+        db.session.add(note)
+        db.session.commit()
+        flash(f'Intervento "{action}" registrato nel diario!', 'success')
+    return redirect(url_for('plant_detail', id=id))
+
 @app.route('/note/<int:note_id>/delete', methods=['POST'])
 def delete_note(note_id):
     note = DiaryNote.query.get_or_404(note_id)
