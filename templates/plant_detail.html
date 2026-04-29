@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="mb-6">
+    <a href="/" class="text-sage hover:underline flex items-center gap-1 text-sm font-medium">
+        ← Torna alla Serra
+    </a>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+    <!-- Plant Info & Watering -->
+    <div class="md:col-span-1">
+        <div class="card p-6 sticky top-24">
+            <div class="w-full aspect-square rounded-2xl overflow-hidden mb-6 bg-sage flex items-center justify-center text-6xl">
+                {% if plant.image_url %}
+                    <img src="{{ url_for('static', filename='uploads/' + plant.image_url) }}" alt="{{ plant.name }}" class="w-full h-full object-cover">
+                {% else %}
+                    🌿
+                {% endif %}
+            </div>
+            <h1 class="text-3xl font-bold mb-1">{{ plant.name }}</h1>
+            <p class="text-gray-400 italic mb-6 border-b pb-4">{{ plant.species }}</p>
+            
+            <div class="space-y-4 mb-8">
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-500">Frequenza:</span>
+                    <span class="font-semibold text-sage">Ogni {{ plant.watering_frequency }} gg</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-500">Ultima volta:</span>
+                    <span class="font-semibold">{{ plant.last_watered.strftime('%d/%m/%Y') }}</span>
+                </div>
+            </div>
+
+            <form action="{{ url_for('water_plant', id=plant.id) }}" method="POST">
+                <button type="submit" class="w-full btn-primary py-4 rounded-2xl font-bold text-lg shadow-lg flex items-center justify-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                    </svg>
+                    Annaffiata oggi!
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Diary and Timeline -->
+    <div class="md:col-span-2">
+        <!-- Add Entry -->
+        <div class="card p-6 mb-8">
+            <h3 class="text-xl font-bold mb-4">Aggiungi al Diario</h3>
+            <form action="{{ url_for('add_note', id=plant.id) }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+                <textarea name="content" rows="3" class="w-full p-4 rounded-xl border border-gray-100 focus:ring-2 focus:ring-sage focus:outline-none bg-gray-50" placeholder="Com'è andata oggi? (es. Messo concime, nuove foglie...)" required></textarea>
+                
+                <div class="flex items-center gap-4">
+                    <div class="flex-1">
+                        <label class="block text-sm font-medium text-gray-500 mb-1">Carica una foto (opzionale)</label>
+                        <input type="file" name="photo" accept="image/*" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-sage file:text-white hover:file:bg-sage/90">
+                    </div>
+                    <button type="submit" class="bg-wood text-white px-6 py-2 rounded-xl font-semibold self-end">
+                        Pubblica
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Timeline -->
+        <h3 class="text-2xl font-bold mb-6 flex items-center gap-2">
+            Timeline della Crescita
+            <span class="text-sm font-normal text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">{{ notes|length }}</span>
+        </h3>
+        
+        <div class="space-y-8 relative before:absolute before:inset-y-0 before:left-4 before:w-0.5 before:bg-gray-100">
+            {% for note in notes %}
+            <div class="relative pl-12">
+                <div class="absolute left-3 top-2 w-3 h-3 rounded-full bg-sage ring-4 ring-white"></div>
+                <div class="card p-5">
+                    <div class="flex justify-between items-start mb-3">
+                        <span class="text-xs font-bold text-sage uppercase tracking-widest">{{ note.date_added.strftime('%d %B %Y') }}</span>
+                    </div>
+                    <p class="text-gray-700 leading-relaxed">{{ note.content }}</p>
+                    
+                    {% if note.image_path %}
+                    <div class="mt-4 rounded-xl overflow-hidden shadow-sm">
+                        <img src="{{ url_for('static', filename='uploads/' + note.image_path) }}" alt="Foto diario" class="w-full h-auto object-cover max-h-96">
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% else %}
+            <div class="text-center py-12 text-gray-400 italic">
+                Nessun ricordo ancora. Inizia a scrivere il diario!
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

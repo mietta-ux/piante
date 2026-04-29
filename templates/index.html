@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+<header class="mb-10 text-center">
+    <h1 class="text-4xl font-bold text-gray-900 mb-2">La Mia Serra</h1>
+    <p class="text-gray-500">Prenditi cura delle tue compagne verdi.</p>
+</header>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    {% for plant in plants %}
+    <a href="{{ url_for('plant_detail', id=plant.id) }}" class="card overflow-hidden group hover:shadow-xl transition-all duration-300">
+        <div class="h-48 overflow-hidden relative">
+            {% if plant.image_url %}
+                <img src="{{ url_for('static', filename='uploads/' + plant.image_url) }}" alt="{{ plant.name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+            {% else %}
+                <!-- Placeholder image or default -->
+                <div class="w-full h-full bg-sage flex items-center justify-center text-white text-4xl">
+                    🌿
+                </div>
+            {% endif %}
+            <div class="absolute bottom-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-semibold text-sage">
+                Ogni {{ plant.watering_frequency }} giorni
+            </div>
+        </div>
+        <div class="p-6">
+            <h2 class="text-xl font-bold mb-1">{{ plant.name }}</h2>
+            <p class="text-gray-400 text-sm italic mb-4">{{ plant.species }}</p>
+            <div class="flex items-center justify-between">
+                <span class="text-xs text-gray-400 uppercase tracking-wider">Ultima acqua:</span>
+                <span class="text-sm font-medium">{{ plant.last_watered.strftime('%d %b') }}</span>
+            </div>
+        </div>
+    </a>
+    {% endfor %}
+</div>
+{% endblock %}
