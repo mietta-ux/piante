@@ -33,10 +33,23 @@ def init_db():
             )
             plant3 = Plant(
                 name='Fiori', 
-                species='Mix Fiori', 
+                species='Categoria', 
                 watering_frequency=1,
                 image_url='fiori.png'
             )
+            
+            # Fiori (Figli)
+            fiori_list = ['Iris', 'Calle']
+            for fiore in fiori_list:
+                nuovo_fiore = Plant(
+                    name=fiore,
+                    species='Fiore',
+                    watering_frequency=1,
+                    image_url='fiori.png',
+                    parent=plant3,
+                    is_pet_friendly=False
+                )
+                db.session.add(nuovo_fiore)
             
             # Categoria Erbe Aromatiche
             plant_aromatiche = Plant(
