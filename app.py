@@ -49,14 +49,25 @@ def init_db():
             db.session.add(plant_aromatiche)
             
             # Erbe Aromatiche (Figlie)
-            erbe = ['Menta', 'Prezzemolo', 'Timo', 'Rosmarino', 'Salvia', 'Alloro', 'Erba cipollina', 'Origano', 'Maggiorana']
-            for erba in erbe:
+            erbe_tips = {
+                'Menta': 'Perfetta in bevande fresche come Mojito, tè freddo, o per insaporire zucchine e dolci al cioccolato.',
+                'Prezzemolo': 'Ideale su piatti a base di pesce, funghi, patate e per guarnire la pasta.',
+                'Timo': 'Ottimo per carni arrosto, patate al forno, funghi e legumi.',
+                'Rosmarino': 'Il re delle patate al forno, arrosti di carne, focacce e pane fatto in casa.',
+                'Salvia': 'Classica con burro per condire ravioli e gnocchi, ottima anche con carni bianche.',
+                'Alloro': 'Indispensabile per brodi, stufati, legumi e sughi a lunga cottura.',
+                'Erba cipollina': 'Perfetta per insaporire formaggi spalmabili, uova, patate e insalate fresche.',
+                'Origano': 'Immancabile sulla pizza, caprese, insalate di pomodori e carne alla pizzaiola.',
+                'Maggiorana': 'Delicata, perfetta per minestre, frittate, ripieni di carne e verdure delicate.'
+            }
+            for erba, tip in erbe_tips.items():
                 nuova_erba = Plant(
                     name=erba,
                     species='Erba Aromatica',
                     watering_frequency=1,
                     image_url='aromatiche.png',
-                    parent=plant_aromatiche
+                    parent=plant_aromatiche,
+                    tips=tip
                 )
                 db.session.add(nuova_erba)
                 

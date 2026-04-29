@@ -60,6 +60,16 @@
                     <span class="font-semibold">{{ plant.last_watered.strftime('%d/%m/%Y') }}</span>
                 </div>
             </div>
+            
+            {% if plant.tips %}
+            <div class="bg-yellow-50 border border-yellow-100 p-4 rounded-xl mb-8 flex gap-3 shadow-sm">
+                <div class="text-yellow-500 text-xl">💡</div>
+                <div>
+                    <h4 class="font-bold text-yellow-800 text-sm mb-1">Lo sapevi che...</h4>
+                    <p class="text-sm text-yellow-700 leading-relaxed">{{ plant.tips }}</p>
+                </div>
+            </div>
+            {% endif %}
 
             {% if plant.last_watered.date() == now.date() %}
             <button disabled class="w-full py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-2 cursor-not-allowed bg-green-50 text-green-700 border-2 border-green-200">

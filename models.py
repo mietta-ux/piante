@@ -12,6 +12,8 @@ class Plant(db.Model):
     last_watered = db.Column(db.DateTime, default=datetime.utcnow)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
+    tips = db.Column(db.Text, nullable=True)
+    
     parent_id = db.Column(db.Integer, db.ForeignKey('plant.id'), nullable=True)
     children = db.relationship('Plant', backref=db.backref('parent', remote_side=[id]))
     
