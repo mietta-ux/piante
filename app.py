@@ -72,7 +72,7 @@ def plant_detail(id):
     plant = Plant.query.get_or_404(id)
     # Order notes by date descending for timeline
     notes = DiaryNote.query.filter_by(plant_id=id).order_by(DiaryNote.date_added.desc()).all()
-    return render_template('plant_detail.html', plant=plant, notes=notes)
+    return render_template('plant_detail.html', plant=plant, notes=notes, now=datetime.utcnow())
 
 @app.route('/plant/<int:id>/water', methods=['POST'])
 def water_plant(id):
@@ -103,6 +103,15 @@ def add_note(id):
     if not file or (file and allowed_file(file.filename)):
         flash('Nota aggiunta al diario con successo!', 'success')
     return redirect(url_for('plant_detail', id=id))
+
+@app.route('/note/<int:note_id>/delete', methods=['POST'])
+def delete_note(note_id):
+    note = DiaryNote.query.get_or_404(note_id)
+    plant_id = note.plant_id
+    db.session.delete(note)
+    db.session.commit()
+    flash('Nota eliminata!', 'success')
+    return redirect(url_for('plant_detail', id=plant_id))
 
 if __name__ == '__main__':
     init_db()
