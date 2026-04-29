@@ -112,7 +112,7 @@ def water_plant(id):
 @app.route('/plant/<int:id>/add_note', methods=['POST'])
 def add_note(id):
     plant = Plant.query.get_or_404(id)
-    content = request.form.get('content')
+    content = request.form.get('content', '').strip()
     stress_before = request.form.get('stress_before', type=int)
     stress_after = request.form.get('stress_after', type=int)
     file = request.files.get('photo')
@@ -123,7 +123,11 @@ def add_note(id):
             filename = secure_filename(f"{datetime.now().strftime('%Y%m%d%H%M%S')}_{file.filename}")
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         else:
-            flash('Attenzione: formato immagine non supportato. La nota è stata salvata senza foto.', 'warning')
+            flash('Attenzione: formato immagine non supportato.', 'warning')
+
+    if not content and not filename and stress_before is None and stress_after is None:
+        flash('Devi aggiungere almeno un testo, una foto o il livello di stress per pubblicare.', 'warning')
+        return redirect(url_for('plant_detail', id=id))
 
     new_note = DiaryNote(
         content=content, 
